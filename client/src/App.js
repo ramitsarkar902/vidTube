@@ -1,7 +1,7 @@
 import { useState } from "react"
 import styled, { ThemeProvider } from "styled-components"
 import { Menu, Navbar } from "./components"
-import { Home } from "./pages"
+import { Home, Video, SignIn } from "./pages"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { darkTheme, lightTheme } from "./utils/Theme"
 const Container = styled.div`
@@ -29,9 +29,11 @@ function App() {
               <Routes>
                 <Route path="/">
                   <Route index element={<Home />} />
-                  {/* <Route path="signin" element={<SignIn />} />
+                  <Route path="signin" element={<SignIn />} />
+
                   <Route path="video">
-                    <Route path=":id" element={<Video />} /> */}
+                    <Route path=":id" element={<Video />} />
+                  </Route>
                 </Route>
               </Routes>
             </Wrapper>

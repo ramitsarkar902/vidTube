@@ -1,3 +1,4 @@
 import Home from "./Home"
-
-export { Home }
+import Video from "./Video"
+import SignIn from "./SignIn"
+export { Home, Video, SignIn }

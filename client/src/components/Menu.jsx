@@ -27,6 +27,7 @@ const Container = styled.div`
   top: 0;
   overflow: scroll;
   overflow-x: hidden;
+  scroll-behavior: smooth;
 `
 
 const Wrapper = styled.div`
@@ -102,10 +103,12 @@ function Menu({ darkMode, setDarkMode }) {
             <span>VidTube</span>
           </Logo>
         </Link>
-        <Item>
-          <HomeIcon />
-          Home
-        </Item>
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <Item>
+            <HomeIcon />
+            Home
+          </Item>
+        </Link>
         <Item>
           <ExploreOutlinedIcon />
           Explore
