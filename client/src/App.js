@@ -4,6 +4,7 @@ import { Menu, Navbar } from "./components"
 import { Home, Video, SignIn } from "./pages"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { darkTheme, lightTheme } from "./utils/Theme"
+
 const Container = styled.div`
   display: flex;
 `
@@ -28,7 +29,9 @@ function App() {
             <Wrapper>
               <Routes>
                 <Route path="/">
-                  <Route index element={<Home />} />
+                  <Route index element={<Home type="random" />} />
+                  <Route path="trends" element={<Home type="trend" />} />
+                  <Route path="subscriptions" element={<Home type="sub" />} />
                   <Route path="signin" element={<SignIn />} />
 
                   <Route path="video">

@@ -1,7 +1,9 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
 import { motion } from "framer-motion"
+import { format } from "timeago.js"
+import axios from "axios"
 
 const Container = styled(motion.div)`
   display: flex;
@@ -70,7 +72,17 @@ const Info = styled.div`
   color: ${({ theme }) => theme.textSoft};
 `
 
-const Card = ({ type }) => {
+const Card = ({ type, video }) => {
+  const [channel, setChannel] = useState({})
+
+  useEffect(() => {
+    const fetchChannel = async () => {
+      const res = await axios.get(`users/find/${video.userId}`)
+      setChannel(res.data)
+    }
+    fetchChannel()
+  }, [video.userId])
+
   return (
     <Link to="/video/type" style={{ textDecoration: "none" }}>
       <Container
@@ -78,19 +90,15 @@ const Card = ({ type }) => {
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1, transition: { duration: 0.5 } }}
       >
-        <Image
-          type={type}
-          src="https://hakune.co/wp-content/uploads/2022/01/Mr-Beast.jpg"
-        />
+        <Image type={type} src={video.imgUrl} />
         <Details type={type}>
-          <ChannelImage
-            type={type}
-            src="https://yt3.ggpht.com/ytc/AKedOLQiUg3bH-I1OhPOfuEpQL_VmU92oiBkJL46hgh8dg=s900-c-k-c0x00ffffff-no-rj"
-          />
+          <ChannelImage type={type} src={channel.img} />
           <Texts>
-            <Title>Playing Squid Games in Real scenes</Title>
-            <ChannelName>Mr Beast</ChannelName>
-            <Info>660,908 views • 1 day ago</Info>
+            <Title>{video.title}</Title>
+            <ChannelName>{channel.name}</ChannelName>
+            <Info>
+              {video.views} views • {format(video.createdAt)}
+            </Info>
           </Texts>
         </Details>
       </Container>

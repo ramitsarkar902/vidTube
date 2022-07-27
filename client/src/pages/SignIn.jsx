@@ -1,6 +1,9 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import { motion } from "framer-motion"
+import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice"
+import { Login } from "../apiCalls"
+import { useDispatch } from "react-redux"
 
 const Container = styled.div`
   display: flex;
@@ -11,7 +14,7 @@ const Container = styled.div`
   color: ${({ theme }) => theme.text};
 `
 
-const Wrapper = styled.div`
+const Wrapper = styled.form`
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -65,18 +68,44 @@ const Link = styled.span`
 `
 
 const SignIn = () => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [name, setName] = useState("")
+  const dispatch = useDispatch()
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    dispatch(loginStart())
+    Login({ name, password }, dispatch)
+  }
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
         <SubTitle>to continue to VidTube</SubTitle>
-        <Input placeholder="username" />
-        <Input type="password" placeholder="password" />
-        <Button whileHover={{ scale: 1.1 }}>Sign in</Button>
+        <Input
+          placeholder="username"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button whileHover={{ scale: 1.1 }} onClick={handleLogin}>
+          Sign in
+        </Button>
         <Title>or</Title>
-        <Input placeholder="username" />
-        <Input placeholder="email" />
-        <Input type="password" placeholder="password" />
+        <Input
+          placeholder="username"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input placeholder="email" onChange={(e) => setEmail(e.target.value)} />
+        <Input
+          type="password"
+          placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <Button whileHover={{ scale: 1.1 }}>Sign up</Button>
       </Wrapper>
       <More>
