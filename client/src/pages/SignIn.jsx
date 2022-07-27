@@ -3,7 +3,9 @@ import styled from "styled-components"
 import { motion } from "framer-motion"
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice"
 import { Login } from "../apiCalls"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
+import ChangingProgressProvider from "../progressBarConfig/ChangingProgressProvider"
 
 const Container = styled.div`
   display: flex;
@@ -72,6 +74,7 @@ const SignIn = () => {
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
   const dispatch = useDispatch()
+  const { isLoading } = useSelector((state) => state.user)
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -92,9 +95,27 @@ const SignIn = () => {
           placeholder="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button whileHover={{ scale: 1.1 }} onClick={handleLogin}>
-          Sign in
-        </Button>
+        {isLoading ? (
+          <ChangingProgressProvider values={[0, 20, 40, 60, 80, 100]}>
+            {(percentage) => (
+              <div style={{ width: 30, height: 10 }}>
+                <CircularProgressbar
+                  styles={buildStyles({
+                    textColor: "red",
+                    pathColor: "turquoise",
+                    trailColor: "gold",
+                  })}
+                  value={percentage}
+                />
+              </div>
+            )}
+          </ChangingProgressProvider>
+        ) : (
+          <Button whileHover={{ scale: 1.1 }} onClick={handleLogin}>
+            Sign in
+          </Button>
+        )}
+
         <Title>or</Title>
         <Input
           placeholder="username"

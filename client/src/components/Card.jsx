@@ -50,6 +50,7 @@ const ChannelImage = styled.img`
   height: 36px;
   border-radius: 50%;
   background-color: #999;
+  object-fit: cover;
   display: ${(props) => props.type === "sm" && "none"};
 `
 
