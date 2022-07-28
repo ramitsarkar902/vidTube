@@ -16,7 +16,13 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined"
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined"
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined"
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined"
+import LogoutIcon from "@mui/icons-material/Logout"
 import { Link } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { useCookies } from "react-cookie"
+import { LogOut } from "../apiCalls"
+import { useNavigate } from "react-router-dom"
+
 const Container = styled.div`
   flex: 1.2;
   background-color: ${({ theme }) => theme.bgLighter};
@@ -71,12 +77,17 @@ const Hr = styled.hr`
   border: 0.5px solid ${({ theme }) => theme.soft};
 `
 
-const Login = styled.div``
+const Login = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`
 const Button = styled.button`
   padding: 5px 15px;
   background-color: transparent;
   border: 1px solid #3ea6ff;
-  color: #3ea6ff;
+  color: ${({ theme }) => theme.text};
   border-radius: 3px;
   font-weight: 500;
   margin-top: 10px;
@@ -94,6 +105,9 @@ const Title = styled.h2`
 `
 
 function Menu({ darkMode, setDarkMode }) {
+  const { user } = useSelector((state) => state.user)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   return (
     <Container>
       <Wrapper>
@@ -115,15 +129,18 @@ function Menu({ darkMode, setDarkMode }) {
             Explore
           </Item>
         </Link>
-        <Link
-          to="/subscriptions"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Item>
-            <SubscriptionsOutlinedIcon />
-            Subscriptions
-          </Item>
-        </Link>
+        {user && (
+          <Link
+            to="/subscriptions"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <Item>
+              <SubscriptionsOutlinedIcon />
+              Subscriptions
+            </Item>
+          </Link>
+        )}
+
         <Hr />
         <Item>
           <VideoLibraryOutlinedIcon />
@@ -134,15 +151,31 @@ function Menu({ darkMode, setDarkMode }) {
           History
         </Item>
         <Hr />
-        <Login>
-          Sign in to like videos, comment, and subscribe.
-          <Link to="signin" style={{ textDecoration: "none" }}>
+        {user ? (
+          <Login>
+            Logout
             <Button>
-              <AccountCircleOutlinedIcon />
-              SIGN IN
+              <LogoutIcon
+                onClick={(e) => {
+                  e.preventDefault()
+                  LogOut({ dispatch })
+                  window.location.reload()
+                  navigate("/")
+                }}
+              />
             </Button>
-          </Link>
-        </Login>
+          </Login>
+        ) : (
+          <Login>
+            Sign in to like videos, comment, and subscribe.
+            <Link to="signin" style={{ textDecoration: "none" }}>
+              <Button>
+                <AccountCircleOutlinedIcon />
+                SIGN IN
+              </Button>
+            </Link>
+          </Login>
+        )}
         <Hr />
         <Title>BEST OF VidTube</Title>
         <Item>

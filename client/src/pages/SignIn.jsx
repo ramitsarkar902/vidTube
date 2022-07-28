@@ -6,6 +6,7 @@ import { Login } from "../apiCalls"
 import { useDispatch, useSelector } from "react-redux"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import ChangingProgressProvider from "../progressBarConfig/ChangingProgressProvider"
+import { useNavigate } from "react-router-dom"
 
 const Container = styled.div`
   display: flex;
@@ -75,11 +76,13 @@ const SignIn = () => {
   const [name, setName] = useState("")
   const dispatch = useDispatch()
   const { isLoading } = useSelector((state) => state.user)
+  const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault()
     dispatch(loginStart())
     Login({ name, password }, dispatch)
+    navigate("/")
   }
   return (
     <Container>
