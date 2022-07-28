@@ -25,7 +25,7 @@ const UserSchema = new mongoose.Schema(
     subscribedUsers: {
       type: [String],
     },
-    fromGoogle: {
+    google: {
       type: Boolean,
       default: false,
     },

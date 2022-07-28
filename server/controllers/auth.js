@@ -35,7 +35,7 @@ export const signin = async (req, res, next) => {
       .cookie("access_token", token, {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
         httpOnly: true,
-        secure: false,
+        secure: true,
       })
       .status(200)
       .json(others);
@@ -44,8 +44,39 @@ export const signin = async (req, res, next) => {
   }
 };
 
-export const googleAuth = (req, res) => {
-  res.status(200).json("OK");
+export const googleAuth = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT, {
+        expiresIn: "24h",
+      });
+      res
+        .cookie("access_token", token, {
+          expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+          httpOnly: true,
+          secure: true,
+        })
+        .status(200)
+        .json(user._doc);
+    } else {
+      const newUser = new User({ ...req.body, google: true });
+      const savedUser = await newUser.save();
+      const token = jwt.sign({ id: savedUser._id }, process.env.JWT, {
+        expiresIn: "24h",
+      });
+      res
+        .cookie("access_token", token, {
+          expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+          httpOnly: true,
+          secure: true,
+        })
+        .status(200)
+        .json(savedUser._doc);
+    }
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const logout = async (req, res) => {
