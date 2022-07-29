@@ -154,15 +154,14 @@ function Menu({ darkMode, setDarkMode }) {
         {user ? (
           <Login>
             Logout
-            <Button>
-              <LogoutIcon
-                onClick={(e) => {
-                  e.preventDefault()
-                  LogOut({ dispatch })
-                  window.location.reload()
-                  navigate("/")
-                }}
-              />
+            <Button
+              onClick={(e) => {
+                e.preventDefault()
+                LogOut({ dispatch })
+                navigate("/")
+              }}
+            >
+              <LogoutIcon />
             </Button>
           </Login>
         ) : (

@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { Card } from "../components"
 import { fetchVideos } from "../apiCalls"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
-import ChangingProgressProvider from "../progressBarConfig/ChangingProgressProvider"
+import ChangingProgressProvider from "../utils/progressBarConfig/ChangingProgressProvider"
 
 const Container = styled.div`
   display: flex;
@@ -50,7 +50,7 @@ function Home({ type }) {
       ) : (
         <>
           {videos.map((video) => (
-            <Card key={video.id} video={video} />
+            <Card key={video._id} video={video} />
           ))}
         </>
       )}

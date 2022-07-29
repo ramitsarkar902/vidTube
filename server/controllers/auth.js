@@ -8,7 +8,10 @@ export const signup = async (req, res, next) => {
   try {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
-    const newUser = new User({ ...req.body, password: hash });
+    const img =
+      req.body.img ||
+      "https://www.seekpng.com/png/detail/245-2454602_tanni-chand-default-user-image-png.png";
+    const newUser = new User({ ...req.body, password: hash, img: img });
 
     await newUser.save();
     res.status(200).send("User has been created!");
@@ -35,7 +38,7 @@ export const signin = async (req, res, next) => {
       .cookie("access_token", token, {
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
         httpOnly: true,
-        secure: true,
+        secure: false,
       })
       .status(200)
       .json(others);
@@ -55,7 +58,7 @@ export const googleAuth = async (req, res, next) => {
         .cookie("access_token", token, {
           expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
           httpOnly: true,
-          secure: true,
+          secure: false,
         })
         .status(200)
         .json(user._doc);
@@ -69,7 +72,7 @@ export const googleAuth = async (req, res, next) => {
         .cookie("access_token", token, {
           expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
           httpOnly: true,
-          secure: true,
+          secure: false,
         })
         .status(200)
         .json(savedUser._doc);

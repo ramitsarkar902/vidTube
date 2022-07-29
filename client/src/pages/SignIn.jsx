@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import { motion } from "framer-motion"
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice"
-import { Login } from "../apiCalls"
+import { Login, SignUpCall } from "../apiCalls"
 import { useDispatch, useSelector } from "react-redux"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
-import ChangingProgressProvider from "../progressBarConfig/ChangingProgressProvider"
+import ChangingProgressProvider from "../utils/progressBarConfig/ChangingProgressProvider"
 import { useNavigate } from "react-router-dom"
+import { auth, provider } from "../utils/fireBase"
+import { signInWithPopup } from "firebase/auth"
+import axios from "axios"
 
 const Container = styled.div`
   display: flex;
@@ -74,15 +77,52 @@ const SignIn = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
+  const [signup, setSignup] = useState(false)
   const dispatch = useDispatch()
   const { isLoading } = useSelector((state) => state.user)
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault()
+    if (!password || !name) {
+      alert("Please fill in all fields")
+      return
+    }
     dispatch(loginStart())
     Login({ name, password }, dispatch)
     navigate("/")
+  }
+
+  const handleSignup = async (e) => {
+    e.preventDefault()
+    if (!password || !name || !email) {
+      alert("Please fill in all fields")
+      return
+    }
+    SignUpCall({ name, email, password, setSignup })
+    alert("Please login now")
+  }
+
+  const signInWithGoogle = async (e) => {
+    e.preventDefault()
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        axios
+          .post("auth/google", {
+            name: result.user.displayName,
+            email: result.user.email,
+            img: result.user.photoURL,
+          })
+          .then((res) => {
+            dispatch(loginSuccess(res.data))
+          })
+          .catch((err) => {
+            dispatch(loginFailure(err))
+          })
+      })
+      .catch((err) => {
+        dispatch(loginFailure(err))
+      })
   }
   return (
     <Container>
@@ -120,20 +160,31 @@ const SignIn = () => {
         )}
 
         <Title>or</Title>
-        <Input
-          placeholder="username"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Input placeholder="email" onChange={(e) => setEmail(e.target.value)} />
-        <Input
-          type="password"
-          placeholder="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button whileHover={{ scale: 1.1 }}>Sign up</Button>
+        <Button onClick={signInWithGoogle}>Sign In with Goggle</Button>
+        {signup === false && (
+          <>
+            <Title>or</Title>
+            <Input
+              placeholder="username"
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Input
+              placeholder="email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              type="password"
+              placeholder="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button whileHover={{ scale: 1.1 }} onClick={handleSignup}>
+              Sign up
+            </Button>
+          </>
+        )}
       </Wrapper>
       <More>
-        English(USA)
+        @Ramit Sarkar
         <Links>
           <Link>Help</Link>
           <Link>Privacy</Link>

@@ -90,7 +90,7 @@ const Navbar = () => {
               onClick={() => setToggle(true)}
             />
             <Avatar src={user.img} />
-            {user.name.slice(0, 1).toUpperCase() + user.name.slice(1)}
+            {user.name}
           </User>
         ) : (
           <Link to="signin" style={{ textDecoration: "none" }}>

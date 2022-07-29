@@ -2,4 +2,5 @@ import Menu from "./Menu"
 import Navbar from "./Navbar"
 import Card from "./Card"
 import Comments from "./Comments"
-export { Menu, Navbar, Card, Comments }
+import Recommendation from "./Recommendation"
+export { Menu, Navbar, Card, Comments, Recommendation }

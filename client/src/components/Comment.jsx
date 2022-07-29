@@ -1,16 +1,26 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
+import { fetchComment, deleteComment } from "../apiCalls"
+import { useSelector } from "react-redux"
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
+import axios from "axios"
 
 const Container = styled.div`
   display: flex;
-  gap: 10px;
   margin: 30px 0px;
+  justify-content: space-between;
+
+  div {
+    display: flex;
+    gap: 10px;
+  }
 `
 
 const Avatar = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  object-fit: cover;
 `
 
 const Details = styled.div`
@@ -35,21 +45,42 @@ const Text = styled.span`
   font-size: 14px;
 `
 
-const Comment = () => {
+const Button = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: ${({ theme }) => theme.text};
+`
+
+const Comment = ({ comment }) => {
+  const [channel, setChannel] = useState({})
+  const { user } = useSelector((state) => state.user)
+  useEffect(() => {
+    fetchComment({ comment, setChannel })
+  }, [comment])
+
   return (
     <Container>
-      <Avatar src="https://yt3.ggpht.com/ytc/AKedOLQVPJGz7OrblaKq8e8jSq9g9_IR4C56YpXp4hto7Q=s88-c-k-c0x00ffffff-no-rj" />
-      <Details>
-        <Name>
-          Shroud <Date>1 day ago</Date>
-        </Name>
-        <Text>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel, ex
-          laboriosam ipsam aliquam voluptatem perferendis provident modi, sequi
-          tempore reiciendis quod, optio ullam cumque? Quidem numquam sint
-          mollitia totam reiciendis?
-        </Text>
-      </Details>
+      <div>
+        <Avatar src={channel.img} />
+        <Details>
+          <Name>
+            {channel.name} <Date>1 day ago</Date>
+          </Name>
+          <Text>{comment.desc}</Text>
+        </Details>
+      </div>
+
+      {user && comment.userId === user._id && (
+        <Button
+          onClick={(e) => {
+            e.preventDefault()
+            deleteComment({ comment })
+          }}
+        >
+          <DeleteOutlineIcon />
+        </Button>
+      )}
     </Container>
   )
 }
